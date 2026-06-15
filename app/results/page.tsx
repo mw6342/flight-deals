@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -38,7 +38,7 @@ interface SearchResult {
   throwaways: ThrowawayFlight[]
 }
 
-export default function ResultsPage() {
+function ResultsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const from = searchParams.get('from') || ''
@@ -227,5 +227,20 @@ export default function ResultsPage() {
         )}
       </div>
     </main>
+  )
+}
+
+export default function ResultsPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center text-gray-500">
+          <div className="text-4xl mb-4">✈</div>
+          <p>正在搜索甩尾机票...</p>
+        </div>
+      </main>
+    }>
+      <ResultsContent />
+    </Suspense>
   )
 }
