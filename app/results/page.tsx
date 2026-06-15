@@ -38,6 +38,11 @@ interface SearchResult {
   throwaways: ThrowawayFlight[]
 }
 
+function ctripUrl(from: string, to: string, date: string) {
+  const d = date || new Date().toISOString().split('T')[0]
+  return `https://flights.ctrip.com/online/list/oneway-${from.toLowerCase()}-${to.toLowerCase()}?depdate=${d}&cabin=Y&adult=1`
+}
+
 function ResultsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -131,7 +136,17 @@ function ResultsContent() {
                       </span>
                       <span className="text-xs text-gray-400">{f.duration}</span>
                     </div>
-                    <span className="font-bold text-gray-800 text-lg">¥{f.price}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-gray-800 text-lg">¥{f.price}</span>
+                      <a
+                        href={ctripUrl(from, to, date)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-blue-600 hover:text-blue-800 border border-blue-200 hover:border-blue-400 rounded-lg px-2 py-1 transition-colors whitespace-nowrap"
+                      >
+                        携程验证 →
+                      </a>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -217,6 +232,26 @@ function ResultsContent() {
                       {/* Warning */}
                       <div className="bg-amber-50 border-t border-amber-100 px-4 py-2 text-xs text-amber-700">
                         ⚠ 不可托运行李至终点站 · 不适用于往返票回程 · 可能影响常旅客积分
+                      </div>
+
+                      {/* CTA buttons */}
+                      <div className="px-4 py-3 flex gap-2 border-t border-gray-100">
+                        <a
+                          href={ctripUrl(from, t.viaCode, date)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 text-center text-sm font-semibold bg-orange-500 hover:bg-orange-600 text-white rounded-lg py-2 transition-colors"
+                        >
+                          在携程搜索甩尾联程票
+                        </a>
+                        <a
+                          href={ctripUrl(from, to, date)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-gray-500 hover:text-gray-700 border border-gray-200 hover:border-gray-300 rounded-lg px-3 py-2 transition-colors whitespace-nowrap"
+                        >
+                          对比直飞价
+                        </a>
                       </div>
                     </div>
                   ))}
